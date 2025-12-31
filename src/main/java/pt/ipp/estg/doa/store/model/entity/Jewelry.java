@@ -6,36 +6,46 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pt.ipp.estg.doa.store.model.enums.Category;
+import pt.ipp.estg.doa.store.model.enums.JewelryType;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Employee implements pt.ipp.estg.doa.store.model.entity.Entity {
+public class Jewelry implements pt.ipp.estg.doa.store.model.entity.Entity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
-    @Size(max = 100)
+    @Size(max = 200)
     private String name;
 
-    @NotBlank
-    @Pattern(regexp = "\\d{9}")
-    @Column(nullable = false, length = 9, unique = true)
-    private String nif;
-
     @NotNull
-    @PastOrPresent
-    private LocalDate hireDate;
+    @Enumerated(EnumType.STRING)
+    private JewelryType type;
+
+    @NotBlank
+    private String material;
 
     @NotNull
     @Positive
-    private BigDecimal salary;
+    private BigDecimal weight;
 
+    @NotNull
+    @Positive
+    private BigDecimal price;
+
+    @NotNull
+    @PositiveOrZero
+    private Integer stock;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Category category;
 }
