@@ -1,6 +1,8 @@
 package pt.ipp.estg.doa.store.service;
 
 import org.springframework.stereotype.Service;
+import pt.ipp.estg.doa.store.exception.DuplicateNifException;
+import pt.ipp.estg.doa.store.exception.ResourceNotFoundException;
 import pt.ipp.estg.doa.store.model.dto.CustomerDTO;
 import pt.ipp.estg.doa.store.model.entity.Customer;
 import pt.ipp.estg.doa.store.repository.CustomerRepository;
@@ -15,18 +17,44 @@ public class CustomerService extends BasedCrudService<Customer, Long, CustomerDT
     }
 
     public CustomerDTO findByEmail(String email) {
-        Customer customer = repository.findByEmail(email);
+        Customer customer = repository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Entity not found for email: " + email));
         return toDTO(customer);
     }
 
     public CustomerDTO findByNif(String nif) {
-        Customer customer = repository.findByNif(nif);
+        Customer customer = repository.findByNif(nif)
+                .orElseThrow(() -> new ResourceNotFoundException("Entity not found for NIF: " + nif));;
         return toDTO(customer);
+    }
+
+    @Override
+    public CustomerDTO add(CustomerDTO dto) {
+        if (repository.existsByNif(dto.getNif())) {
+            throw new DuplicateNifException(
+                    "Customer with NIF " + dto.getNif() + " already exists");
+        }
+        return super.add(dto);
+    }
+
+    @Override
+    public void delete (Long id) {
+        //TODO after ORDERS
+        /*if (orderRepository.existsByCustomerId(id)) {
+            throw new InvalidOperationException(
+                    "Cannot delete customer with existing orders");
+        }*/
+        super.delete(id);
     }
 
     @Override
     public CustomerRepository getRepository() {
         return repository;
+    }
+
+    @Override
+    protected String getEntityClassName() {
+        return Customer.class.getSimpleName();
     }
 
     @Override

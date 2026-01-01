@@ -22,23 +22,10 @@ public class Customer implements pt.ipp.estg.doa.store.model.entity.Entity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     private String name;
-
-    @NotBlank
-    @Pattern(regexp = "\\d{9}")
-    @Column(unique = true)
     private String nif;
-
-    @NotBlank
-    @Email
     private String email;
-
-    @NotBlank
-    @Pattern(regexp = "\\d{9}")
     private String phone;
-
-    @NotBlank
     private String address;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
