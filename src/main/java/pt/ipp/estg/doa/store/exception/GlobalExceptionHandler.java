@@ -1,4 +1,4 @@
-package pt.ipp.estg.doa.store.model.dto.response;
+package pt.ipp.estg.doa.store.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import pt.ipp.estg.doa.store.exception.*;
+import pt.ipp.estg.doa.store.model.dto.response.ErrorResponse;
+import pt.ipp.estg.doa.store.model.dto.response.FieldErrorResponse;
+import pt.ipp.estg.doa.store.model.dto.response.ValidationErrorResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;

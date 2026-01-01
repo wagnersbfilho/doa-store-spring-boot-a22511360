@@ -20,27 +20,13 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerDTO>> getCustomers() {
-        try {
-            return ResponseEntity.ok(service.findAll());
-        } catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
+    public List<CustomerDTO> getCustomers() {
+        return service.findAll();
     }
 
     @GetMapping("/{id}")
     public CustomerDTO findById(@PathVariable Long id) {
         return service.findById(id);
-    }
-
-    @GetMapping("/nif/{nif}")
-    public CustomerDTO findByNif(@PathVariable String nif) {
-        return service.findByNif(nif);
-    }
-
-    @GetMapping("/email/{email}")
-    public CustomerDTO findByEmail(@PathVariable String email) {
-        return service.findByEmail(email);
     }
 
     @PostMapping
@@ -61,5 +47,15 @@ public class CustomerController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         service.delete(id);
+    }
+
+    @GetMapping("/nif/{nif}")
+    public CustomerDTO findByNif(@PathVariable String nif) {
+        return service.findByNif(nif);
+    }
+
+    @GetMapping("/email/{email}")
+    public CustomerDTO findByEmail(@PathVariable String email) {
+        return service.findByEmail(email);
     }
 }

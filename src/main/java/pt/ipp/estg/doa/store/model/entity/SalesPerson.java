@@ -11,8 +11,9 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Manager extends Employee{
+public class SalesPerson extends Employee {
 
-    private String department;
-    private BigDecimal bonus;
+    private BigDecimal commissionRate;
+    private BigDecimal totalSales;
+
 }

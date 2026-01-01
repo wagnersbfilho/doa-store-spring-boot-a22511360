@@ -2,7 +2,6 @@ package pt.ipp.estg.doa.store.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
-import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,21 +20,8 @@ public class Employee implements pt.ipp.estg.doa.store.model.entity.Entity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(max = 100)
     private String name;
-
-    @NotBlank
-    @Pattern(regexp = "\\d{9}")
-    @Column(nullable = false, length = 9, unique = true)
     private String nif;
-
-    @NotNull
-    @PastOrPresent
     private LocalDate hireDate;
-
-    @NotNull
-    @Positive
     private BigDecimal salary;
-
 }

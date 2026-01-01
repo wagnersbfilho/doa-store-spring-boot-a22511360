@@ -1,10 +1,12 @@
 package pt.ipp.estg.doa.store.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import pt.ipp.estg.doa.store.model.entity.Employee;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import pt.ipp.estg.doa.store.model.dto.EmployeeDTO;
+import pt.ipp.estg.doa.store.model.dto.EmployeeSalaryDTO;
+import pt.ipp.estg.doa.store.model.dto.ManagerDTO;
+import pt.ipp.estg.doa.store.model.dto.SalesPersonDTO;
 import pt.ipp.estg.doa.store.service.EmployeeService;
 
 import java.util.List;
@@ -20,11 +22,43 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Employee>> getEmployees() {
-        try {
-            return ResponseEntity.ok(service.findAll());
-        } catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
+    public List<EmployeeDTO> getCustomers() {
+        return service.findAll();
     }
-}
+
+    @GetMapping("/{id}")
+    public EmployeeDTO findById(@PathVariable Long id) {
+        return service.findById(id);
+    }
+
+    @PostMapping("/salesperson")
+    @ResponseStatus(HttpStatus.CREATED)
+    public EmployeeDTO createSalesPerson(
+            @Valid @RequestBody SalesPersonDTO request) {
+        return service.add(request);
+    }
+
+    @PostMapping("/manager")
+    @ResponseStatus(HttpStatus.CREATED)
+    public EmployeeDTO creatManager(
+            @Valid @RequestBody ManagerDTO request) {
+        return service.add(request);
+    }
+
+    @PutMapping("/{id}/salary")
+    public EmployeeDTO updateSalary(
+            @PathVariable Long id,
+            @Valid @RequestBody EmployeeSalaryDTO request) {
+        return service.updateSalary(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
+    }
+
+    @GetMapping("/nif/{nif}")
+    public EmployeeDTO findByNif(@PathVariable String nif) {
+        return service.findByNif(nif);
+    }}
