@@ -3,6 +3,7 @@ package pt.ipp.estg.doa.store.service;
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import pt.ipp.estg.doa.store.exception.OutOfStockException;
 import pt.ipp.estg.doa.store.exception.ResourceNotFoundException;
 import pt.ipp.estg.doa.store.model.dto.OrderDTO;
 import pt.ipp.estg.doa.store.model.dto.OrderItemDTO;
@@ -99,8 +100,11 @@ public class OrderService extends BasedCrudService<Order, Long, OrderDTO> {
     }
 
     private Jewelry getJewelry(OrderItemDTO dto) {
-        return jewelryRepository.findById(dto.getIdJewelry())
+        Jewelry jewelry = jewelryRepository.findById(dto.getIdJewelry())
                 .orElseThrow(() -> new ResourceNotFoundException("Jewelry not found for the Order: " + dto.getIdJewelry()));
+        if (jewelry.getStock() == 0)
+            throw new OutOfStockException("Jewelry Stock Not Enough. ID: " + dto.getIdJewelry());
+        return jewelry;
     }
 
     @Override
