@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pt.ipp.estg.doa.store.exception.DuplicateNifException;
 import pt.ipp.estg.doa.store.exception.ResourceNotFoundException;
 import pt.ipp.estg.doa.store.model.dto.EmployeeDTO;
-import pt.ipp.estg.doa.store.model.dto.EmployeeSalaryDTO;
+import pt.ipp.estg.doa.store.model.dto.EmployeeUpdateDTO;
 import pt.ipp.estg.doa.store.model.dto.ManagerDTO;
 import pt.ipp.estg.doa.store.model.dto.SalesPersonDTO;
 import pt.ipp.estg.doa.store.model.entity.Employee;
@@ -28,7 +28,7 @@ public class EmployeeService extends BasedCrudService<Employee, Long, EmployeeDT
         return toDTO(employee);
     }
 
-    public EmployeeDTO updateSalary(Long id, EmployeeSalaryDTO dto) {
+    public EmployeeDTO updateSalary(Long id, EmployeeUpdateDTO dto) {
         Employee entity = getRepository().findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cannot update. " + getEntityClassName() + " not found. ID: " + id));
         entity.setSalary(dto.getSalary());
@@ -77,48 +77,31 @@ public class EmployeeService extends BasedCrudService<Employee, Long, EmployeeDT
                     m.getBonus());
         }
 
-        return new EmployeeDTO(
-                null,
-                entity.getId(),
-                entity.getName(),
-                entity.getNif(),
-                entity.getHireDate(),
-                entity.getSalary());
+        return null;
     }
 
     @Override
     protected Employee toEntity(EmployeeDTO employeeDTO) {
 
         if (employeeDTO instanceof SalesPersonDTO) {
-            SalesPersonDTO sp  = (SalesPersonDTO) employeeDTO;
+            SalesPersonDTO dto  = (SalesPersonDTO) employeeDTO;
             SalesPerson salesPerson = new SalesPerson();
-            salesPerson.setName(sp.getName());
-            salesPerson.setNif(sp.getNif());
-            salesPerson.setHireDate(sp.getHireDate());
-            salesPerson.setSalary(sp.getSalary());
-            salesPerson.setCommissionRate(sp.getCommissionRate());
-            salesPerson.setTotalSales(sp.getTotalSales());
+            setCommonEmployeeData(salesPerson, dto);
+            salesPerson.setCommissionRate(dto.getCommissionRate());
+            salesPerson.setTotalSales(dto.getTotalSales());
             return salesPerson;
         }
 
         if (employeeDTO instanceof ManagerDTO) {
-            ManagerDTO m = (ManagerDTO) employeeDTO;
+            ManagerDTO dto = (ManagerDTO) employeeDTO;
             Manager manager = new Manager();
-            manager.setName(m.getName());
-            manager.setNif(m.getNif());
-            manager.setHireDate(m.getHireDate());
-            manager.setSalary(m.getSalary());
-            manager.setBonus(m.getBonus());
-            manager.setDepartment(m.getDepartment());
+            setCommonEmployeeData(manager, dto);
+            manager.setBonus(dto.getBonus());
+            manager.setDepartment(dto.getDepartment());
             return manager;
         }
 
-        Employee employee = new Employee();
-        employee.setName(employeeDTO.getName());
-        employee.setNif(employeeDTO.getNif());
-        employee.setHireDate(employeeDTO.getHireDate());
-        employee.setSalary(employeeDTO.getSalary());
-        return employee;
+        return null;
     }
 
     @Override
@@ -126,23 +109,24 @@ public class EmployeeService extends BasedCrudService<Employee, Long, EmployeeDT
 
         if (entity instanceof SalesPerson salesPerson) {
             SalesPersonDTO sp = (SalesPersonDTO) employeeDTO;
-            salesPerson.setName(sp.getName());
-            salesPerson.setNif(sp.getNif());
-            salesPerson.setHireDate(sp.getHireDate());
-            salesPerson.setSalary(sp.getSalary());
+            setCommonEmployeeData(salesPerson, sp);
             salesPerson.setCommissionRate(sp.getCommissionRate());
             salesPerson.setTotalSales(sp.getTotalSales());
         }
 
         else if (entity instanceof Manager manager) {
-            ManagerDTO m = (ManagerDTO) employeeDTO;
-            manager.setName(m.getName());
-            manager.setNif(m.getNif());
-            manager.setHireDate(m.getHireDate());
-            manager.setSalary(m.getSalary());
-            manager.setBonus(m.getBonus());
-            manager.setDepartment(m.getDepartment());
+            ManagerDTO dto = (ManagerDTO) employeeDTO;
+            setCommonEmployeeData(manager, dto);
+            manager.setBonus(dto.getBonus());
+            manager.setDepartment(dto.getDepartment());
         }
+    }
+
+    private static void setCommonEmployeeData(Employee employee, EmployeeDTO dto) {
+        employee.setName(dto.getName());
+        employee.setNif(dto.getNif());
+        employee.setHireDate(dto.getHireDate());
+        employee.setSalary(dto.getSalary());
     }
 
     @Override

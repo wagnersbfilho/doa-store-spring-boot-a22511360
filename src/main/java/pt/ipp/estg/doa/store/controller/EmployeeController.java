@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pt.ipp.estg.doa.store.model.dto.EmployeeDTO;
-import pt.ipp.estg.doa.store.model.dto.EmployeeSalaryDTO;
+import pt.ipp.estg.doa.store.model.dto.EmployeeUpdateDTO;
 import pt.ipp.estg.doa.store.model.dto.ManagerDTO;
 import pt.ipp.estg.doa.store.model.dto.SalesPersonDTO;
 import pt.ipp.estg.doa.store.service.EmployeeService;
@@ -22,7 +22,7 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public List<EmployeeDTO> getCustomers() {
+    public List<EmployeeDTO> findAll() {
         return service.findAll();
     }
 
@@ -48,7 +48,7 @@ public class EmployeeController {
     @PutMapping("/{id}/salary")
     public EmployeeDTO updateSalary(
             @PathVariable Long id,
-            @Valid @RequestBody EmployeeSalaryDTO request) {
+            @Valid @RequestBody EmployeeUpdateDTO request) {
         return service.updateSalary(id, request);
     }
 
@@ -61,4 +61,5 @@ public class EmployeeController {
     @GetMapping("/nif/{nif}")
     public EmployeeDTO findByNif(@PathVariable String nif) {
         return service.findByNif(nif);
-    }}
+    }
+}

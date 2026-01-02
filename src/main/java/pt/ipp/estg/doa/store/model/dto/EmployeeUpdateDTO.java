@@ -7,7 +7,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class EmployeeSalaryDTO {
+public class EmployeeUpdateDTO {
 
     @NotNull
     @Positive
