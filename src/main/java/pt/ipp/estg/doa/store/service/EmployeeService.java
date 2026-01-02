@@ -6,20 +6,19 @@ import pt.ipp.estg.doa.store.exception.DuplicateNifException;
 import pt.ipp.estg.doa.store.exception.ResourceNotFoundException;
 import pt.ipp.estg.doa.store.model.dto.EmployeeDTO;
 import pt.ipp.estg.doa.store.model.dto.EmployeeUpdateDTO;
-import pt.ipp.estg.doa.store.model.dto.ManagerDTO;
-import pt.ipp.estg.doa.store.model.dto.SalesPersonDTO;
 import pt.ipp.estg.doa.store.model.entity.Employee;
-import pt.ipp.estg.doa.store.model.entity.Manager;
-import pt.ipp.estg.doa.store.model.entity.SalesPerson;
+import pt.ipp.estg.doa.store.model.mapper.EmployeerMapper;
 import pt.ipp.estg.doa.store.repository.EmployeeRepository;
 
 @Service
 public class EmployeeService extends BasedCrudService<Employee, Long, EmployeeDTO>{
 
     private final EmployeeRepository repository;
+    private final EmployeerMapper mapper;
 
-    public EmployeeService(EmployeeRepository repository) {
+    public EmployeeService(EmployeeRepository repository, EmployeerMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     public EmployeeDTO findByNif(String nif) {
@@ -51,82 +50,17 @@ public class EmployeeService extends BasedCrudService<Employee, Long, EmployeeDT
 
     @Override
     protected EmployeeDTO toDTO(Employee entity) {
-
-        if (entity instanceof SalesPerson) {
-            SalesPerson sp  = (SalesPerson) entity;
-            return new SalesPersonDTO(
-                    sp.getId(),
-                    sp.getName(),
-                    sp.getNif(),
-                    sp.getHireDate(),
-                    sp.getSalary(),
-                    sp.getCommissionRate(),
-                    sp.getTotalSales()
-            );
-        }
-
-        if (entity instanceof Manager) {
-            Manager m  = (Manager) entity;
-            return new ManagerDTO(
-                    m.getId(),
-                    m.getName(),
-                    m.getNif(),
-                    m.getHireDate(),
-                    m.getSalary(),
-                    m.getDepartment(),
-                    m.getBonus());
-        }
-
-        return null;
+        return mapper.toDTO(entity);
     }
 
     @Override
     protected Employee toEntity(EmployeeDTO employeeDTO) {
-
-        if (employeeDTO instanceof SalesPersonDTO) {
-            SalesPersonDTO dto  = (SalesPersonDTO) employeeDTO;
-            SalesPerson salesPerson = new SalesPerson();
-            setCommonEmployeeData(salesPerson, dto);
-            salesPerson.setCommissionRate(dto.getCommissionRate());
-            salesPerson.setTotalSales(dto.getTotalSales());
-            return salesPerson;
-        }
-
-        if (employeeDTO instanceof ManagerDTO) {
-            ManagerDTO dto = (ManagerDTO) employeeDTO;
-            Manager manager = new Manager();
-            setCommonEmployeeData(manager, dto);
-            manager.setBonus(dto.getBonus());
-            manager.setDepartment(dto.getDepartment());
-            return manager;
-        }
-
-        return null;
+        return mapper.toEntity(employeeDTO);
     }
 
     @Override
     protected void updateEntity(EmployeeDTO employeeDTO, Employee entity) {
-
-        if (entity instanceof SalesPerson salesPerson) {
-            SalesPersonDTO sp = (SalesPersonDTO) employeeDTO;
-            setCommonEmployeeData(salesPerson, sp);
-            salesPerson.setCommissionRate(sp.getCommissionRate());
-            salesPerson.setTotalSales(sp.getTotalSales());
-        }
-
-        else if (entity instanceof Manager manager) {
-            ManagerDTO dto = (ManagerDTO) employeeDTO;
-            setCommonEmployeeData(manager, dto);
-            manager.setBonus(dto.getBonus());
-            manager.setDepartment(dto.getDepartment());
-        }
-    }
-
-    private static void setCommonEmployeeData(Employee employee, EmployeeDTO dto) {
-        employee.setName(dto.getName());
-        employee.setNif(dto.getNif());
-        employee.setHireDate(dto.getHireDate());
-        employee.setSalary(dto.getSalary());
+       mapper.updateEntity(employeeDTO, entity);
     }
 
     @Override

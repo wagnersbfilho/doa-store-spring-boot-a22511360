@@ -2,8 +2,6 @@ package pt.ipp.estg.doa.store.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,14 +20,9 @@ public class Payment implements pt.ipp.estg.doa.store.model.entity.Entity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Positive
     private BigDecimal amount;
-
-    @NotNull
     private LocalDate paymentDate = LocalDate.now();
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 

@@ -2,7 +2,6 @@ package pt.ipp.estg.doa.store.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ipp.estg.doa.store.model.dto.CustomerDTO;
 import pt.ipp.estg.doa.store.service.CustomerService;

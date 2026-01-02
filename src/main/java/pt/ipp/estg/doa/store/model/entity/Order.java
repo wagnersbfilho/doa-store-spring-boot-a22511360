@@ -24,10 +24,8 @@ public class Order implements pt.ipp.estg.doa.store.model.entity.Entity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    private LocalDate orderDate = LocalDate.now();
+    private LocalDate orderDate;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 

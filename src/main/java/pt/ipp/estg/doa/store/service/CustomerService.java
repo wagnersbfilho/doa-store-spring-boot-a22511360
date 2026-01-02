@@ -1,20 +1,21 @@
 package pt.ipp.estg.doa.store.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pt.ipp.estg.doa.store.exception.DuplicateNifException;
+import pt.ipp.estg.doa.store.exception.InvalidOperationException;
 import pt.ipp.estg.doa.store.exception.ResourceNotFoundException;
 import pt.ipp.estg.doa.store.model.dto.CustomerDTO;
 import pt.ipp.estg.doa.store.model.entity.Customer;
+import pt.ipp.estg.doa.store.model.mapper.CustomerMapper;
 import pt.ipp.estg.doa.store.repository.CustomerRepository;
 
 @Service
+@AllArgsConstructor
 public class CustomerService extends BasedCrudService<Customer, Long, CustomerDTO> {
 
     private final CustomerRepository repository;
-
-    public CustomerService(CustomerRepository repository) {
-        this.repository = repository;
-    }
+    private final CustomerMapper mapper;
 
     public CustomerDTO findByEmail(String email) {
         Customer customer = repository.findByEmail(email)
@@ -39,11 +40,12 @@ public class CustomerService extends BasedCrudService<Customer, Long, CustomerDT
 
     @Override
     public void delete (Long id) {
-        //TODO after ORDERS
-        /*if (orderRepository.existsByCustomerId(id)) {
+        Customer customer = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found. ID: " + id));
+        if (customer.getOrders() != null && !customer.getOrders().isEmpty()) {
             throw new InvalidOperationException(
                     "Cannot delete customer with existing orders");
-        }*/
+        }
         super.delete(id);
     }
 
@@ -59,32 +61,16 @@ public class CustomerService extends BasedCrudService<Customer, Long, CustomerDT
 
     @Override
     protected CustomerDTO toDTO(Customer customer) {
-        return new CustomerDTO(
-                customer.getId(),
-                customer.getName(),
-                customer.getNif(),
-                customer.getEmail(),
-                customer.getPhone(),
-                customer.getAddress()
-        );
+        return mapper.toDTO(customer);
     }
 
     @Override
     protected Customer toEntity(CustomerDTO dto) {
-        Customer customer = new Customer();
-        customer.setName(dto.getName());
-        customer.setNif(dto.getNif());
-        customer.setEmail(dto.getEmail());
-        customer.setPhone(dto.getPhone());
-        customer.setAddress(dto.getAddress());
-        return customer;
+        return mapper.toEntity(dto);
     }
 
     @Override
     protected void updateEntity(CustomerDTO dto, Customer customer) {
-        customer.setName(dto.getName());
-        customer.setEmail(dto.getEmail());
-        customer.setPhone(dto.getPhone());
-        customer.setAddress(dto.getAddress());
+        mapper.updateEntity(dto, customer);
     }
 }

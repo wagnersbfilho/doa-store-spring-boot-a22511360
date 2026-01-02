@@ -1,6 +1,7 @@
 package pt.ipp.estg.doa.store.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     /**
@@ -27,6 +29,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleNotFound(
             ResourceNotFoundException ex,
             HttpServletRequest request) {
+
+        log.warn("Resource not found: path={}, message={}",
+                request.getRequestURI(),
+                ex.getMessage());
 
         return buildErrorResponse(
                 HttpStatus.NOT_FOUND,
@@ -52,6 +58,11 @@ public class GlobalExceptionHandler {
             RuntimeException ex,
             HttpServletRequest request) {
 
+        log.warn("Business conflict: path={}, exception={}, message={}",
+                request.getRequestURI(),
+                ex.getClass().getSimpleName(),
+                ex.getMessage());
+
         return buildErrorResponse(
                 HttpStatus.CONFLICT,
                 ex.getMessage(),
@@ -68,6 +79,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationErrorResponse> handleValidation(
             MethodArgumentNotValidException ex) {
+
+        log.warn("Validation failed: errors={}",
+                ex.getBindingResult().getFieldErrors());
 
         List<FieldErrorResponse> errors = ex.getBindingResult()
                 .getFieldErrors()
@@ -100,6 +114,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGeneric(
             Exception ex,
             HttpServletRequest request) {
+
+        log.error("Unexpected error: path={}",
+                request.getRequestURI(),
+                ex);
 
         return buildErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR,

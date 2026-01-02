@@ -20,12 +20,7 @@ public class OrderItem implements pt.ipp.estg.doa.store.model.entity.Entity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Positive
     private Integer quantity;
-
-    @NotNull
-    @Positive
     private BigDecimal priceAtPurchase;
 
     @ManyToOne
