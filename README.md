@@ -1,12 +1,5 @@
 ## DOA Store Management System - Spring Boot / Docker
 
-## Project Information
-- <b>The project is available (public) in my personal GitHub repository:</b>
-- https://github.com/wagnersbfilho/doa-store-spring-boot-a22511360
-
-## Student Information
-- Wagner Filho
-- a22511360
 
 ## Project Description
 This Project is a Java application with Spring Boot, JPA, and Database Persistence that manages the core operations of Jewelry Store.
